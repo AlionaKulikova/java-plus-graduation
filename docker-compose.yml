@@ -1,14 +1,72 @@
 services:
   stats-server:
+    build:
+      context: stat/stat-server
+      dockerfile: Dockerfile
+    image: stats-server-image
+    container_name: stats-server
     ports:
       - "9090:9090"
+    depends_on:
+      - stats-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statsdb
+      - SPRING_DATASOURCE_USERNAME=statsuser
+      - SPRING_DATASOURCE_PASSWORD=statspass
+    networks:
+      - ewm-network
 
   stats-db:
     image: postgres:16.1
+    container_name: stats-db
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_PASSWORD=statspass
+      - POSTGRES_USER=statsuser
+      - POSTGRES_DB=statsdb
+    healthcheck:
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ewm-network
 
   ewm-service:
+    build:
+      context: main-service
+      dockerfile: Dockerfile
+    image: ewm-service-image
+    container_name: ewm-service
     ports:
       - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewmdb
+      - SPRING_DATASOURCE_USERNAME=ewmuser
+      - SPRING_DATASOURCE_PASSWORD=ewmpass
+      - STATS_SERVER_URL=http://stats-server:9090
+    networks:
+      - ewm-network
 
   ewm-db:
     image: postgres:16.1
+    container_name: ewm-db
+    ports:
+      - "6543:5432"
+    environment:
+      - POSTGRES_PASSWORD=ewmpass
+      - POSTGRES_USER=ewmuser
+      - POSTGRES_DB=ewmdb
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    networks:
+      - ewm-network
+
+networks:
+  ewm-network:
+    driver: bridge
