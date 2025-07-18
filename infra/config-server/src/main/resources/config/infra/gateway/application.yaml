@@ -5,8 +5,103 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: main_service_route
-          uri: lb://main-service
+        - id: location_service_internal_route
+          uri: lb://location-service
+          predicates:
+            - Path=/internal/locations/**
+
+        - id: location_service_private_route
+          uri: lb://location-service
+          predicates:
+            - Path=/users/{userId}/locations/**
+
+        - id: like_service_internal_route
+          uri: lb://like-service
+          predicates:
+            - Path=/internal/likes/**
+
+        - id: like_service_private_location_route
+          uri: lb://like-service
+          predicates:
+            - Path=/users/{userId}/locations/{locationId}/likes/**
+
+        - id: like_service_private_event_route
+          uri: lb://like-service
+          predicates:
+            - Path=/users/{userId}/events/{eventId}/likes/**
+
+        - id: event_service_event_admin_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/events/**
+
+        - id: event_service_category_admin_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/categories/**
+
+        - id: event_service_compilation_admin_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/compilations/**
+
+        - id: event_service_event_internal_route
+          uri: lb://event-service
+          predicates:
+            - Path=/internal/events/**
+
+        - id: event_service_event_private_route_1
+          uri: lb://event-service
+          predicates:
+            - Path=/users/{userId}/events
+
+        - id: event_service_event_private_route_2
+          uri: lb://event-service
+          predicates:
+            - Path=/users/{userId}/events/{eventId}
+
+        - id: event_service_event_public_route
+          uri: lb://event-service
+          predicates:
+            - Path=/events/**
+
+        - id: event_service_compilation_public_route
+          uri: lb://event-service
+          predicates:
+            - Path=/compilations/**
+
+        - id: event_service_category_public_route
+          uri: lb://event-service
+          predicates:
+            - Path=/categories/**
+
+        - id: request_service_internal_route
+          uri: lb://request-service
+          predicates:
+            - Path=/internal/requests/**
+
+        - id: request_service_private_route_1
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/events/{eventId}/requests/**
+
+        - id: request_service_private_route_2
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/requests/**
+
+        - id: user_service_admin_route
+          uri: lb://user-service
+          predicates:
+            - Path=/admin/users/**
+
+        - id: user_service_internal_route
+          uri: lb://user-service
+          predicates:
+            - Path=/internal/users/**
+
+        - id: stat_server_circuitbreaker_route
+          uri: lb://stat_server
           predicates:
             - Path=/**
 
