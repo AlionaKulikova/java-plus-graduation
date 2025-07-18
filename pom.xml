@@ -19,86 +19,66 @@
 	<name>Explore With Me</name>
 
 	<modules>
-		<module>stat</module>
-		<module>main-service</module>
+		<module>stats</module>
+		<module>infra</module>
+		<module>core</module>
 	</modules>
 
 	<properties>
 		<java.version>21</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- Версии зависимостей -->
-		<lombok.version>1.18.32</lombok.version>
-		<mapstruct.version>1.5.5.Final</mapstruct.version>
-		<jackson.version>2.17.1</jackson.version>
-		<postgresql.version>42.7.3</postgresql.version>
-		<h2.version>2.2.224</h2.version>
-		<jakarta.validation.version>3.0.2</jakarta.validation.version>
-		<jakarta.persistence.version>3.1.0</jakarta.persistence.version>
-		<!-- Версии плагинов -->
-		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
-		<checkstyle.version>10.3</checkstyle.version>
-		<spotbugs.version>4.8.3.0</spotbugs.version>
-		<jacoco.version>0.8.12</jacoco.version>
+		<mapstruct.version>1.6.0.Beta2</mapstruct.version>
+		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+		<querydsl-jpa.version>5.1.0</querydsl-jpa.version>
+		<spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
+		<commons-lang3.version>3.14.0</commons-lang3.version>
+		<spring.cloud.version>4.1.3</spring.cloud.version>
+		<maven.compiler.plugin.version>3.10.1</maven.compiler.plugin.version>
+		<hibernate.version>6.6.0.Final</hibernate.version>
 	</properties>
 
 	<!-- Управление зависимостями для всех модулей -->
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
-			<!-- Внутренние модули -->
-			<dependency>
-				<groupId>ru.practicum</groupId>
-				<artifactId>stat-dto</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ru.practicum</groupId>
-				<artifactId>stat-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<!-- Общие зависимости -->
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${lombok.version}</version>
-				<scope>provided</scope>
-			</dependency>
 			<dependency>
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct</artifactId>
 				<version>${mapstruct.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>jakarta.validation</groupId>
-				<artifactId>jakarta.validation-api</artifactId>
-				<version>${jakarta.validation.version}</version>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok-mapstruct-binding</artifactId>
+				<version>${lombok-mapstruct-binding.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>jakarta.persistence</groupId>
-				<artifactId>jakarta.persistence-api</artifactId>
-				<version>${jakarta.persistence.version}</version>
+				<groupId>org.mapstruct</groupId>
+				<artifactId>mapstruct-processor</artifactId>
+				<version>${mapstruct.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.fasterxml.jackson.datatype</groupId>
-				<artifactId>jackson-datatype-jsr310</artifactId>
-				<version>${jackson.version}</version>
+				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-jpa</artifactId>
+				<classifier>jakarta</classifier>
+				<version>${querydsl-jpa.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.fasterxml.jackson.core</groupId>
-				<artifactId>jackson-annotations</artifactId>
-				<version>${jackson.version}</version>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons-lang3.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>${postgresql.version}</version>
-				<scope>runtime</scope>
-			</dependency>
-			<dependency>
-				<groupId>com.h2database</groupId>
-				<artifactId>h2</artifactId>
-				<version>${h2.version}</version>
-				<scope>runtime</scope>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud-dependencies.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

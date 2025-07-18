@@ -1,0 +1,40 @@
+stats-server:
+  url: ${STATS_SERVER_URL:http://localhost:9090}
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://ewm-db:5432/ewm-main
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        show_sql: false
+  sql:
+    init:
+      mode: always
+  cloud:
+    openfeign:
+      client:
+        config:
+          main-stats-client:
+            connectTimeout: 5000
+            readTimeout: 5000
+            loggerLevel: full
+
+server:
+  port: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health"
+  endpoint:
+    health:
+      show-details: always
