@@ -72,6 +72,7 @@ public class EventServiceImpl implements EventService {
                 request.getRemoteAddr(),
                 LocalDateTime.now().format(FORMATTER)
         );
+        log.info("до отправки в сервер статистики");
         log.info("Статистика: {}", statDto);
         statClient.createStats(statDto);
 
