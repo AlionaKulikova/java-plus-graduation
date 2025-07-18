@@ -3,9 +3,9 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: false
+          enabled: true
       routes:
         - id: main_service_route
-          uri: lb://MAIN-SERVICE
+          uri: lb://main-service
           predicates:
-            - Path=/**
+          - Path=/main-service/**
