@@ -5,12 +5,7 @@ spring:
         locator:
           enabled: false
       routes:
-        - id: location_service_internal_route
-          uri: lb://location-service
-          predicates:
-            - Path=/internal/locations/**
-
-        - id: stat_server_circuitbreaker_route
-          uri: lb://stats-server
+        - id: main_service_route
+          uri: lb://main-service
           predicates:
             - Path=/**
