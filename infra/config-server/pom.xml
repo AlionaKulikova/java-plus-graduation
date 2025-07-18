@@ -31,11 +31,6 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>

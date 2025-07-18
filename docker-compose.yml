@@ -99,7 +99,7 @@ services:
 
   ewm-service:
     build: core/main-service
-    container_name: ewm-main-service
+    container_name: main-service
     depends_on:
       ewm-db:
         condition: service_healthy
