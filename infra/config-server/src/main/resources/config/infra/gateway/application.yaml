@@ -6,6 +6,6 @@ spring:
           enabled: false
       routes:
         - id: main_service_route
-          uri: lb://main-service
+          uri: lb://MAIN-SERVICE
           predicates:
             - Path=/**
