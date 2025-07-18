@@ -5,7 +5,7 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: main_service_route
+        - id: main_service
           uri: lb://main-service
           predicates:
             - Path=/**
@@ -19,3 +19,6 @@ management:
       enabled: true
 server:
   port: 8080
+  logging:
+    level:
+      root: DEBUG
