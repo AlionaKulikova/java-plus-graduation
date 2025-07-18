@@ -1,6 +1,6 @@
 spring:
   application:
-    name: main-service
+    name: MAIN-SERVICE
   config:
     import: "configserver:"
   cloud:

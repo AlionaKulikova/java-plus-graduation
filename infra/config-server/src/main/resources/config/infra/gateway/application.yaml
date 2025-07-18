@@ -6,6 +6,9 @@ spring:
           enabled: true
       routes:
         - id: main_service_route
-          uri: lb://main-service
+          uri: lb://MAIN-SERVICE
           predicates:
-          - Path=/main-service/**
+            - Path=/**
+
+server:
+  port: 8080
