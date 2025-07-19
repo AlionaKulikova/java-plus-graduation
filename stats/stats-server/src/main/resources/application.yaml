@@ -2,7 +2,7 @@ spring:
   application:
     name: stats-server
   config:
-    import: "config-server:"
+    import: "configserver:"
   cloud:
     config:
       fail-fast: true
