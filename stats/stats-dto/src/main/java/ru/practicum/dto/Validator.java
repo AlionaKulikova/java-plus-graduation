@@ -1,9 +1,9 @@
 package ru.practicum.dto;
 
 public interface Validator {
-    interface Create {
-    }
 
-    interface Update {
-    }
+    interface Create {}
+
+    interface Update {}
+
 }

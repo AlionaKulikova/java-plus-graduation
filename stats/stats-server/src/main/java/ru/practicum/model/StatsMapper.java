@@ -5,8 +5,7 @@ import org.mapstruct.ReportingPolicy;
 import ru.practicum.dto.EndpointHit;
 
 
-@Mapper(componentModel = org.mapstruct.MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = org.mapstruct.MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface StatsMapper {
     Hit toModel(EndpointHit createStatsDto);
 

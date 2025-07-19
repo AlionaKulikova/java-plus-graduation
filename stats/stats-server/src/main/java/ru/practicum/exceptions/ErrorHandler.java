@@ -20,32 +20,23 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleOtherExc(final Exception e) {
         log(e);
-
-        return Map.of(
-                "error", "Непредвиденная ошибка",
-                "errorMessage", e.getMessage()
-        );
+        return Map.of("error", "Unexpected error",
+                "errorMessage", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> errorBadRequest(final DataTimeException e) {
         log(e);
-
-        return Map.of(
-                "error", e.getClass().getSimpleName(),
-                "errorMessage", e.getMessage()
-        );
+        return Map.of("error", e.getClass().getSimpleName(),
+                "errorMessage", e.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> errorBadRequest(final MissingServletRequestParameterException e) {
         log(e);
-
-        return Map.of(
-                "error", "Отсутствует обязательный параметр запроса",
-                "errorMessage", e.getMessage()
-        );
+        return Map.of("error", "MissingServletRequestParameterException",
+                "errorMessage", e.getMessage());
     }
 }

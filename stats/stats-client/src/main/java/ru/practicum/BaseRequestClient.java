@@ -22,7 +22,6 @@ public class BaseRequestClient {
         if (response.hasBody()) {
             return bodyBuilder.body(response.getBody());
         }
-
         return bodyBuilder.build();
     }
 
@@ -48,7 +47,6 @@ public class BaseRequestClient {
         } catch (HttpStatusCodeException ex) {
             return ResponseEntity.status(ex.getStatusCode()).body(ex.getResponseBodyAsByteArray());
         }
-
         return buildResponse(statsServerResponse);
     }
 
@@ -56,7 +54,6 @@ public class BaseRequestClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
         return headers;
     }
 }

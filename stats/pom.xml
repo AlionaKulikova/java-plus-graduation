@@ -11,7 +11,9 @@
     </parent>
 
     <artifactId>stats</artifactId>
+
     <packaging>pom</packaging>
+
 
     <modules>
         <module>stats-client</module>

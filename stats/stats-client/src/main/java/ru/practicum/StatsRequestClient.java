@@ -22,7 +22,7 @@ public class StatsRequestClient extends BaseRequestClient {
     }
 
     public ResponseEntity<Object> postHit(EndpointHit endpointHit) {
-        log.info("Запрос на добавление статистики");
+        log.info("Выполнение запрос на добавление события вызова сервиса в статистику через модуль client");
         return post(endpointHit);
     }
 
@@ -35,8 +35,7 @@ public class StatsRequestClient extends BaseRequestClient {
                 "start", start,
                 "end", end,
                 "unique", unique);
-
-        log.info("Запрос на получение статистики");
+        log.info("Выполнение запрос на получение статистики через модуль client");
         return get("/stats?start={start}&end={end}" + uri + "&unique={unique}", parameters);
     }
 }
