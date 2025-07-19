@@ -18,6 +18,7 @@
     </properties>
 
     <dependencies>
+        <!-- Основные зависимости Gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
@@ -38,6 +39,7 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
         </dependency>
+        <!-- Актуатор включен в starter-gateway, но нужно явно добавить starter-actuator -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -52,5 +54,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
