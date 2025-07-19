@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations:
+            - classpath:config/infra/{application}
+            - classpath:config/core/{application}
+            - classpath:config/stats/{application}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+    instance-id: "${spring.application.name}:${random.value}"
+    lease-renewal-interval-in-seconds: 10
+
+server:
+  port: 0
+
+  logging:
+    level:
+
+      org.springframework.cloud.gateway: DEBUG
+
+      org.springframework.boot.actuate: TRACE
+
+      org.springframework.cloud.netflix.eureka: DEBUG
+
+      org.springframework.cloud.config.server: DEBUG
+
+      org.springframework: INFO
+
+      org.springframework.web: DEBUG
+      reactor.netty.http.client: DEBUG
+      reactor.netty.http.server: DEBUG
