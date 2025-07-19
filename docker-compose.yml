@@ -23,9 +23,6 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
       - SERVER_PORT=9091
-      - SPRING_APPLICATION_NAME=config-server
-    ports:
-      - "9091:9091"
     healthcheck:
       test: "curl --fail --silent config-server:9091/actuator/health | grep UP || exit 1"
       timeout: 5s
@@ -46,15 +43,6 @@ services:
       - ewm-net
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SERVER_PORT=8080
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
-      - MANAGEMENT_ENDPOINT_GATEWAY_ENABLED=true
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1" ]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
 
   stats-server:
     build: stats/stats-server
@@ -73,21 +61,11 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SPRING_APPLICATION_NAME=stats-service
-      - SPRING_CLOUD_CONFIG_URI=http://config-server:9091
-      - SERVER_PORT=9090
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
-      - MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS=always
-      - SPRING_SQL_INIT_SCHEMA_LOCATIONS=classpath:schema.sql
-      - SPRING_SQL_INIT_CONTINUE_ON_ERROR=true
     healthcheck:
-      test: |
-        CMD-SHELL
-        curl -f http://localhost:9090/actuator/health || exit 1
-      timeout: 10s
+      test: "curl --fail --silent localhost:9090/actuator/health | grep UP || exit 1"
+      timeout: 5s
       interval: 15s
-      retries: 5
-      start_period: 40s
+      retries: 10
 
   stats-db:
     image: postgres:16.1
@@ -96,8 +74,6 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
       - POSTGRES_DB=ewm-stats
-    volumes:
-      - ./stats/stats-server/docker/init:/docker-entrypoint-initdb.d
     networks:
       - ewm-net
     healthcheck:
@@ -106,10 +82,9 @@ services:
       interval: 10s
       retries: 15
 
-
   ewm-service:
     build: core/main-service
-    container_name: main-service
+    container_name: ewm-main-service
     depends_on:
       ewm-db:
         condition: service_healthy
@@ -124,17 +99,12 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
-      - SPRING_CLOUD_CONFIG_URI=http://config-server:9091
-      - STATS_SERVER_URL=http://stats-server:9090
-      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
-      - SPRING_CLOUD_CONFIG_RETRY_MAX_ATTEMPTS=10
-      - SPRING_CLOUD_CONFIG_RETRY_INITIAL_INTERVAL=1500
+      - SERVER_PORT=8081
     healthcheck:
-      test: [ "CMD-SHELL", "pidof java || exit 1" ]
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
       timeout: 5s
-      interval: 15s
-      retries: 5
-      start_period: 40s
+      interval: 25s
+      retries: 10
 
   ewm-db:
     image: postgres:16.1
