@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://stats-db:5432/ewm-stats
+    username: root
+    password: root
+  sql:
+    init:
+      mode: always
+
+hibernate:
+  show_sql: true
+  jdbc:
+    time_zone: UTC
+
+stat-server:
+  uri: http://localhost:9090
