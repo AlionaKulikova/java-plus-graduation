@@ -5,32 +5,11 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: main_service
+        - id: main-service-route
           uri: lb://main-service
           predicates:
             - Path=/**
-    management:
-      endpoints:
-        web:
-          exposure:
-            include: '*'
-      endpoint:
-        health:
-          show-details: always
 
-  server:
-    port: 8080
-    logging:
-      level:
-        root: DEBUG
-
-  eureka:
-    client:
-      serviceUrl:
-        defaultZone: http://localhost:8761/eureka/
-    instance:
-      prefer-ip-address: true
-      hostname: localhost
-      instance-id: "${spring.application.name}:${random.value}"
-      lease-renewal-interval-in-seconds: 10
+server:
+  port: 8080
 

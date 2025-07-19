@@ -2,23 +2,21 @@ spring:
   application:
     name: main-service
   config:
-    import: "configserver:"
+    import: 'configserver:'
   cloud:
     config:
+      discovery:
+        service-id: config-server
+        enabled: true
       fail-fast: true
       retry:
-        useRandomPolicy: true
-        max-interval: 6000
-      discovery:
-        enabled: true
-        service-id: config-server
+        use-random-policy: true
+        max-interval: 10000
 
 eureka:
+  instance:
+    prefer-ip-address: true
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
-    hostname: localhost
-    instance-id: "${spring.application.name}:${random.value}"
-    lease-renewal-interval-in-seconds: 10
+    register-with-eureka: true

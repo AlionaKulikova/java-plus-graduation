@@ -34,8 +34,24 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
-#        include: "health"
+        include: "health"
   endpoint:
     health:
       show-details: always
+
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+##        include: "health"
+#  endpoint:
+#    health:
+#      show-details: always
+
+
+
+
+
+
+
