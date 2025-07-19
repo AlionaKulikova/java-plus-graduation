@@ -1,22 +1,50 @@
 package ru.practicum.user.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
-import ru.practicum.user.dto.NewUserRequest;
+
+import ru.practicum.user.dto.AdminUserDto;
 import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.dto.UserDtoReceived;
 import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.model.User;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
-public interface UserMapper {
-    UserDto toUserDto(User user);
+import java.util.List;
+import java.util.stream.Collectors;
 
-    @Mapping(target = "id", ignore = true)
-    User toUser(NewUserRequest newUserRequest);
 
-    @Mapping(target = "id", source = "id")
-    @Mapping(target = "name", source = "name")
-    UserShortDto toUserShortDto(User user);
+public class UserMapper {
+
+    public UserDto toUserDto(User user) {
+        return UserDto.builder()
+                .name(user.getName())
+                .id(user.getId())
+                .build();
+    }
+
+    public static User toUser(UserDtoReceived userDto) {
+        return User.builder()
+                .email(userDto.getEmail())
+                .name(userDto.getName())
+                .isAdmin(userDto.getIsAdmin())
+                .build();
+    }
+
+    public static UserShortDto toUserShortDto(User user) {
+        return UserShortDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .build();
+    }
+
+    public static AdminUserDto toAdminUserDto(User newUser) {
+        return AdminUserDto.builder()
+                .email(newUser.getEmail())
+                .id(newUser.getId())
+                .name(newUser.getName())
+                .build();
+    }
+
+    public static List<AdminUserDto> toListAdminUserDto(List<User> users) {
+        return users.stream().map(UserMapper::toAdminUserDto).collect(Collectors.toList());
+    }
+
 }

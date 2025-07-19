@@ -1,39 +1,30 @@
 package ru.practicum.comment.model;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import ru.practicum.events.model.Event;
+import ru.practicum.event.model.Event;
 import ru.practicum.user.model.User;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
-@Builder
-@Entity
-@Table(name = "comments")
-@NoArgsConstructor
+@ToString
 @AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "comments")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "created", nullable = false)
-    private LocalDateTime created;
-
-    @Column(name = "message", nullable = false, length = 1000)
-    private String message;
-
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "event_id", referencedColumnName = "id")
+    private long id;
+    private String text;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id")
     private Event event;
-
-    @ManyToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
     private User author;
+    @Column(name = "created_on")
+    private LocalDateTime create;
 }

@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- Родительский BOM от Spring Boot -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.0</version>
-		<relativePath/>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+	<name>Explore With Me</name>
 
 	<groupId>ru.practicum</groupId>
 	<artifactId>explore-with-me</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Explore With Me</name>
 
 	<modules>
 		<module>stats</module>
@@ -37,7 +36,6 @@
 		<hibernate.version>6.6.0.Final</hibernate.version>
 	</properties>
 
-	<!-- Управление зависимостями для всех модулей -->
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -88,27 +86,6 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven-compiler-plugin.version}</version>
-					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-						<annotationProcessorPaths>
-							<path>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-								<version>${lombok.version}</version>
-							</path>
-							<path>
-								<groupId>org.mapstruct</groupId>
-								<artifactId>mapstruct-processor</artifactId>
-								<version>${mapstruct.version}</version>
-							</path>
-						</annotationProcessorPaths>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<configuration>
 						<systemPropertyVariables>
@@ -119,14 +96,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>${maven-checkstyle-plugin.version}</version>
-					<dependencies>
-						<dependency>
-							<groupId>com.puppycrawl.tools</groupId>
-							<artifactId>checkstyle</artifactId>
-							<version>${checkstyle.version}</version>
-						</dependency>
-					</dependencies>
+					<version>3.1.2</version>
 					<configuration>
 						<configLocation>checkstyle.xml</configLocation>
 						<failOnViolation>true</failOnViolation>
@@ -135,26 +105,30 @@
 					</configuration>
 					<executions>
 						<execution>
-							<id>checkstyle-check</id>
-							<phase>validate</phase>
 							<goals>
 								<goal>check</goal>
 							</goals>
+							<phase>compile</phase>
 						</execution>
 					</executions>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>10.3</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
 					<artifactId>spotbugs-maven-plugin</artifactId>
-					<version>${spotbugs.version}</version>
+					<version>4.8.5.0</version>
 					<configuration>
 						<effort>Max</effort>
 						<threshold>High</threshold>
 					</configuration>
 					<executions>
 						<execution>
-							<id>spotbugs-check</id>
-							<phase>verify</phase>
 							<goals>
 								<goal>check</goal>
 							</goals>
@@ -164,27 +138,19 @@
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>${jacoco.version}</version>
+					<version>0.8.12</version>
 					<configuration>
 						<output>file</output>
 					</configuration>
 					<executions>
 						<execution>
-							<id>jacoco-prepare</id>
+							<id>jacoco-initialize</id>
 							<goals>
 								<goal>prepare-agent</goal>
 							</goals>
 						</execution>
 						<execution>
-							<id>jacoco-report</id>
-							<phase>install</phase>
-							<goals>
-								<goal>report</goal>
-							</goals>
-						</execution>
-						<execution>
 							<id>jacoco-check</id>
-							<phase>verify</phase>
 							<goals>
 								<goal>check</goal>
 							</goals>
@@ -201,22 +167,22 @@
 											<limit>
 												<counter>LINE</counter>
 												<value>COVEREDRATIO</value>
-												<minimum>0.20</minimum>
+												<minimum>0.2</minimum>
 											</limit>
 											<limit>
 												<counter>BRANCH</counter>
 												<value>COVEREDRATIO</value>
-												<minimum>0.20</minimum>
+												<minimum>0.2</minimum>
 											</limit>
 											<limit>
 												<counter>COMPLEXITY</counter>
 												<value>COVEREDRATIO</value>
-												<minimum>0.20</minimum>
+												<minimum>0.2</minimum>
 											</limit>
 											<limit>
 												<counter>METHOD</counter>
 												<value>COVEREDRATIO</value>
-												<minimum>0.20</minimum>
+												<minimum>0.2</minimum>
 											</limit>
 											<limit>
 												<counter>CLASS</counter>
@@ -228,12 +194,18 @@
 								</rules>
 							</configuration>
 						</execution>
+						<execution>
+							<id>jacoco-site</id>
+							<phase>install</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
 					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-
 	<profiles>
 		<profile>
 			<id>check</id>
@@ -249,6 +221,14 @@
 					</plugin>
 				</plugins>
 			</build>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>com.github.spotbugs</groupId>
+						<artifactId>spotbugs-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</reporting>
 		</profile>
 		<profile>
 			<id>coverage</id>
@@ -262,4 +242,5 @@
 			</build>
 		</profile>
 	</profiles>
+
 </project>

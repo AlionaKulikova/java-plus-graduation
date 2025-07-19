@@ -1,39 +1,28 @@
 package ru.practicum.user.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.FieldDefaults;
-import ru.practicum.subscriptions.model.Subscription;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Data
+@Builder
 @Entity
-@Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "users")
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    @Column(name = "name", nullable = false)
-    String name;
-    @Column(name = "email", nullable = false, unique = true)
-    String email;
+    @Column(name = "id")
+    private Long id;
 
-    @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
-    private List<Subscription> subscriptions = new ArrayList<>();
+    @Column(name = "user_name")
+    private String name;
 
-    @OneToMany(mappedBy = "subscribedTo", cascade = CascadeType.ALL)
-    private List<Subscription> subscribers = new ArrayList<>();
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
 }

@@ -1,24 +1,26 @@
 package ru.practicum.comment.service;
 
-import ru.practicum.comment.dto.CommentDtoRequest;
-import ru.practicum.comment.dto.CommentDtoResponse;
+import ru.practicum.comment.dto.CommentDto;
+import ru.practicum.comment.dto.CommentDtoPublic;
 
 import java.util.List;
 
 public interface CommentService {
-    CommentDtoResponse getCommentAdmin(Long commentId);
 
-    void deleteCommentAdmin(Long commentId);
+    CommentDto addCommentToEvent(Long authorId, Long eventId, CommentDto commentDto);
 
-    List<CommentDtoResponse> getCommentsOfEventPublic(Long eventId, Integer from, Integer size);
+    CommentDto getCommentByUser(Long authorId, Long commentId);
 
-    List<CommentDtoResponse> getAllCommentsByUserIdPrivate(Long userId);
+    List<CommentDto> getAllCommentsByEvent(Long eventId);
 
-    CommentDtoResponse getCommentByIdByUserIdPrivate(Long userId, Long commentId);
+    CommentDto updateCommentByUser(Long authorId, Long commentId, CommentDto commentDto);
 
-    CommentDtoResponse createCommentPrivate(CommentDtoRequest newComment, Long userId, Long eventId);
+    void deleteCommentByUser(Long authorId, Long commentId);
 
-    CommentDtoResponse updateCommentPrivate(CommentDtoRequest newComment, Long userId, Long commentId);
 
-    void deleteByIdByUser(Long userId, Long commentId);
+    CommentDto updateCommentByAdmin(Long commentId, CommentDto commentDto);
+
+    void deleteCommentByAdmin(Long commentId);
+
+    List<CommentDtoPublic> getAllCommentsByEventPublic(Long eventId);
 }
