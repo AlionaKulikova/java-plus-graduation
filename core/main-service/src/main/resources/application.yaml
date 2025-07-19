@@ -8,7 +8,7 @@ spring:
       fail-fast: true
       retry:
         useRandomPolicy: true
-        max-interval: 8000
+        max-interval: 6000
       discovery:
         enabled: true
         service-id: config-server
@@ -21,4 +21,4 @@ eureka:
     prefer-ip-address: true
     hostname: localhost
     instance-id: "${spring.application.name}:${random.value}"
-    lease-renewal-interval-in-seconds: 20
+    lease-renewal-interval-in-seconds: 10
