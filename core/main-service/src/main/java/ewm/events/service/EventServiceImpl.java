@@ -1,5 +1,7 @@
 package ewm.events.service;
 
+import ewm.category.model.Category;
+import ewm.category.repository.CategoryRepository;
 import ewm.client.StatRestClient;
 import ewm.dto.EndpointHitDto;
 import ewm.error.exception.ConflictException;
@@ -14,6 +16,11 @@ import ewm.events.model.EventState;
 import ewm.events.model.Location;
 import ewm.events.repository.EventRepository;
 import ewm.events.repository.LocationRepository;
+import ewm.requests.model.RequestStatus;
+import ewm.requests.repository.RequestRepository;
+import ewm.subscriptions.model.Subscription;
+import ewm.user.model.User;
+import ewm.user.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
@@ -28,19 +35,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ewm.category.model.Category;
-import ewm.category.repository.CategoryRepository;
-import ewm.requests.model.RequestStatus;
-import ewm.requests.repository.RequestRepository;
-import ewm.subscriptions.model.Subscription;
-import ewm.user.model.User;
-import ewm.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @RequiredArgsConstructor
 @Service
@@ -49,7 +48,6 @@ import java.util.List;
 public class EventServiceImpl implements EventService {
 
     private final RequestRepository requestRepository;
-
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final StatRestClient statRestClient;
@@ -60,7 +58,7 @@ public class EventServiceImpl implements EventService {
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
     private static final int TIME_BEFORE = 10;
-//////////////////////////////public///////////////////////////////////////
+
     @Transactional
     @Override
     public EventFullDto getEventById(Long id, HttpServletRequest request) {
@@ -85,9 +83,8 @@ public class EventServiceImpl implements EventService {
         }
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = now.minusYears(TIME_BEFORE);
-        log.info("dddd");
 
-      statRestClient.stats(start,/////////////////////////////////
+        statRestClient.stats(start,
                         now,
                         List.of("/events/" + id), true)
                 .forEach(viewStatsDto -> event.setViews(viewStatsDto.getHits()));
@@ -102,7 +99,7 @@ public class EventServiceImpl implements EventService {
 
         return eventFullDto;
     }
-/////////////////////////////////////////////////////////////////////////////////////////
+
     @Override
     public List<EventShortDto> getPublicEvents(String text, List<Long> categories, Boolean paid,
                                                LocalDateTime rangeStart, LocalDateTime rangeEnd,
@@ -172,7 +169,7 @@ public class EventServiceImpl implements EventService {
                 .map(eventMapper::toEventShortDto)
                 .toList();
     }
-///////////////////////////////////админ///////////////////////////////////////////////////////////
+
     @Override
     @Transactional
     public List<EventFullDto> getAdminEventById(List<Long> userIds, List<String> states, List<Long> categories,
@@ -292,7 +289,7 @@ public class EventServiceImpl implements EventService {
         Event updatedEvent = eventRepository.save(event);
         return eventMapper.toEventFullDto(updatedEvent);
     }
-/////////////////////////////////////////////private///////////////////////////////////////////////////
+
     public EventFullDto privateGetUserEvent(Long userId, Long eventId, HttpServletRequest request) {
         log.info("userId: {}", userId);
         try {
@@ -422,7 +419,7 @@ public class EventServiceImpl implements EventService {
                 .map(eventMapper::toEventShortDto)
                 .toList();
     }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     private Event checkEventExists(Long eventId) {
         return eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Событие с ID=" + eventId + " не найдено"));

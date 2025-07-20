@@ -1,25 +1,27 @@
 server:
-port: 9090
+  port: 9090
 
 spring:
-datasource:
-url: jdbc:h2:mem:main-server-db
-driver-class-name: org.h2.Driver
-username: user
-password: "12345"
-h2:
-console:
-enabled: true
-jpa:
-database-platform: org.hibernate.dialect.H2Dialect
-sql:
-init:
-mode: always
+  datasource:
+    url: jdbc:h2:mem:main-server-db
+    driver-class-name: org.h2.Driver
+    username: user
+    password: "12345"
 
-hibernate:
-show_sql: true
-jdbc:
-time_zone: UTC
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    sql:
+      init:
+        mode: always
+
+  hibernate:
+    show_sql: true
+    jdbc:
+      time_zone: UTC
 
 stat-server:
-uri: http://localhost:9090
+  uri: http://localhost:9090

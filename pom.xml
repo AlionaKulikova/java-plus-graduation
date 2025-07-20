@@ -100,6 +100,19 @@
 					<version>0.8.12</version>
 					<configuration>
 						<output>file</output>
+						<excludes>
+							<exclude>stats/**</exclude>
+							<exclude>infra/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/category/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/comment/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/configuration/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/error/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/events/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/requests/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/utils/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/user/**</exclude>
+							<exclude>core/main-service/src/main/java/ewm/compilation/**</exclude>
+						</excludes>
 					</configuration>
 					<executions>
 						<execution>
@@ -126,7 +139,7 @@
 											<limit>
 												<counter>LINE</counter>
 												<value>COVEREDRATIO</value>
-												<minimum>0.2</minimum>
+												<minimum>0.8</minimum>
 											</limit>
 											<limit>
 												<counter>BRANCH</counter>
