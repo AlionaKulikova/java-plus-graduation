@@ -3,9 +3,91 @@ spring:
     gateway:
       discovery.locator.enabled: true
       routes:
-        - id: main_service_route
-          uri: lb://main-service
+        - id: user_service_route
+          uri: lb://user-service
           predicates:
-            - Path=/**
+            - Path=/admin/users/**
+        - id: subscription_service_route
+          uri: lb://subscription-service
+          predicates:
+            - Path=/users/{userId}/subscriptions/**
+        - id: admin_categories_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/categories/**
+        - id: admin_publish_and_edit_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/events/**
+        - id: add_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/user/{userId}/events
+        - id: public_findallby_categories_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/categories
+        - id: public_categories_event_service_route1
+          uri: lb://event-service
+          predicates:
+            - Path=/categories/*
+        - id: public_categories_event_service_route2
+          uri: lb://event-service
+          predicates:
+            - Path=/users/{userId}/events
+        - id: requests_service_route
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/requests
+        - id: admin_seek_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/events
+        - id: user_seek_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/users/{userId}/events
+            - Query=from
+            - Query=size
+        - id: seek_filtered_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/events
+        - id: seek_by_id_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/events/{id}
+        - id: user_seek_and_edit_by_id_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/users/{id}/events/{eventId}
+        - id: user_seek_by_event_id_change_status_and_reject_request_service_route
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/events/{eventId}/requests
+        - id: user_cancel_by_request_id_service_route
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/requests/{requestId}/cancel
+        - id: user_add_by_id_request_service_route
+          uri: lb://request-service
+          predicates:
+            - Path=/users/{userId}/requests/{requestId}/cancel
+        - id: add_new_compilation_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/compilations
+        - id: get_by_id_compilation_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/compilations/{compId}
+        - id: get_filtered_compilation_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/compilations
+        - id: delete_compilation_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/admin/compilations/{compId}
 server:
   port: 8080

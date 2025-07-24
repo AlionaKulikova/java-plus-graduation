@@ -103,15 +103,10 @@
 						<excludes>
 							<exclude>stats/**</exclude>
 							<exclude>infra/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/category/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/comment/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/configuration/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/error/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/events/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/requests/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/utils/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/user/**</exclude>
-							<exclude>core/main-service/src/main/java/ewm/compilation/**</exclude>
+							<exclude>core/event-service/**</exclude>
+							<exclude>core/interaction-service/**</exclude>
+							<exclude>core/request-service/**</exclude>
+							<exclude>core/user-service/**</exclude>
 						</excludes>
 					</configuration>
 					<executions>
