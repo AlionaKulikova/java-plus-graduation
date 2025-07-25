@@ -20,7 +20,7 @@ public class EventController implements EventFeignClient {
     private final EventService eventService;
 
     @GetMapping(PathConstants.USER_ID_EVENT_ID)
-    public EventFullDto  getEventOfUser(@PathVariable Long userId, @PathVariable Long eventId) {
+    public EventFullDto getEventOfUser(@PathVariable Long userId, @PathVariable Long eventId) {
         return eventService.getEventOfUser(eventId, userId);
     }
 

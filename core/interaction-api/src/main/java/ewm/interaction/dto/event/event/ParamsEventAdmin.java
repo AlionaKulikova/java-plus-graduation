@@ -12,10 +12,14 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ParamsEventAdmin {
     List<Long> userIds;
+
     List<EventState> states;
+
     List<Long> categories;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime rangeStart;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime rangeEnd;
 }

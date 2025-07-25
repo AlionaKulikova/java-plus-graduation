@@ -26,16 +26,16 @@ import java.util.List;
 @RequestMapping(PathConstants.EVENTS)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventControllerPublic {
-   private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-   private final EventServicePublic eventServicePublic;
-   private final StatRestClient statRestClient;
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final EventServicePublic eventServicePublic;
+    private final StatRestClient statRestClient;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    List<EventShortDto> getEventsByParams(@Valid @ModelAttribute ParamsEventPublic params,
-                                 @RequestParam(defaultValue = "0") int from,
-                                 @RequestParam(defaultValue = "10") int size,
-                                 HttpServletRequest request) {
+    public List<EventShortDto> getEventsByParams(@Valid @ModelAttribute ParamsEventPublic params,
+                                                 @RequestParam(defaultValue = "0") int from,
+                                                 @RequestParam(defaultValue = "10") int size,
+                                                 HttpServletRequest request) {
         List<EventShortDto> eventsShortDto = eventServicePublic.getEventsByParams(params, PageRequest.of(from, size));
         addHit("/events", request.getRemoteAddr());
 
@@ -43,14 +43,14 @@ public class EventControllerPublic {
     }
 
     @GetMapping(PathConstants.EVENT_ID)
-    ResponseEntity<EventFullDto> getEventByID(@PathVariable Long eventId, HttpServletRequest request) {
+    public ResponseEntity<EventFullDto> getEventByID(@PathVariable Long eventId, HttpServletRequest request) {
         EventFullDto eventFullDto = eventServicePublic.getEventByID(eventId);
         addHit("/events/" + eventId, request.getRemoteAddr());
 
         return ResponseEntity.ok(eventFullDto);
     }
 
-    void addHit(String uri, String ip) {
+    private void addHit(String uri, String ip) {
         LocalDateTime now = LocalDateTime.now();
         EndpointHitDto hitDto = new EndpointHitDto("main-server", uri, ip, now.format(dateTimeFormatter));
         statRestClient.addHit(hitDto);

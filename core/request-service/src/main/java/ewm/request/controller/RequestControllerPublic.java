@@ -23,16 +23,16 @@ public class RequestControllerPublic {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    List<ParticipationRequestDto> getEventRequests(@PathVariable @Positive Long userId,
-                                                   @PathVariable @Positive Long eventId) {
+    public List<ParticipationRequestDto> getEventRequests(@PathVariable @Positive Long userId,
+                                                          @PathVariable @Positive Long eventId) {
         return requestService.getEventRequests(userId, eventId);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    EventRequestStatusUpdateResult updateEventRequest(@PathVariable @Positive Long userId,
-                                                      @PathVariable @Positive Long eventId,
-                                                      @RequestBody EventRequestStatusUpdateRequest updateRequest) {
+    public EventRequestStatusUpdateResult updateEventRequest(@PathVariable @Positive Long userId,
+                                                             @PathVariable @Positive Long eventId,
+                                                             @RequestBody EventRequestStatusUpdateRequest updateRequest) {
         return requestService.updateEventRequest(userId, eventId, updateRequest);
     }
 }

@@ -17,13 +17,21 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventShortDto {
     Long id;
+
     String annotation;
+
     CategoryDto category;
+
     long confirmedRequests;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
+
     UserShortDto initiator;
+
     boolean paid;
+
     String title;
+
     long views;
 }

@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class Location {
     @Column(name = "latitude")
     Float lat;
+
     @Column(name = "longitude")
     Float lon;
 }

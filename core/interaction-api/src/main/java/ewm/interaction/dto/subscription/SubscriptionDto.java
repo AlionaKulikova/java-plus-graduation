@@ -8,7 +8,10 @@ import lombok.Setter;
 @Setter
 public class SubscriptionDto {
     private Long id;
+
     private UserShortDto subscriber;
+
     private UserShortDto subscribed;
+
     private String created;
 }

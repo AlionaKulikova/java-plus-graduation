@@ -20,10 +20,13 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     @Column(name = " subscriber_id")
     Long subscriberId;
+
     @Column(name = "subscribed_id")
     Long subscribedId;
+
     @CreationTimestamp
     @Column(name = "created")
     LocalDateTime created;

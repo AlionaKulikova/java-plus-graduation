@@ -14,12 +14,18 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ParamsEventPublic {
     String text;
+
     List<Long> categories;
+
     Boolean paid;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime rangeStart;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime rangeEnd;
+
     boolean onlyAvailable;
+
     String sort;
 }

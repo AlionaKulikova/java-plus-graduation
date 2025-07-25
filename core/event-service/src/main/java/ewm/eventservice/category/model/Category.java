@@ -16,6 +16,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     @Size(min = 1, max = 50)
     @Column(name = "name", nullable = false, unique = true)

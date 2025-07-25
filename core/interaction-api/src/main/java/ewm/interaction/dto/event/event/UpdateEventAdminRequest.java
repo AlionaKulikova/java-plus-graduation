@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateEventAdminRequest extends UpdateEventRequest {
     AdminStateAction stateAction;
+
     @EventDateInOneHour
     LocalDateTime eventDate;
 }

@@ -15,7 +15,9 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NewCompilationDto {
     boolean pinned;
+
     @Size(min = 1, max = 50)
     String title;
+    
     Set<Long> events;
 }

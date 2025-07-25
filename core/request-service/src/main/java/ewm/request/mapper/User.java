@@ -22,8 +22,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     @Column(name = "name", length = 250, nullable = false)
     String name;
+
     @Column(name = "email", length = 254, nullable = false)
     String email;
 }

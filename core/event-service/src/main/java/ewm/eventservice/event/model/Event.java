@@ -26,34 +26,47 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     @Column(name = "annotation", length = 2000, nullable = false)
     String annotation;
+
     @Fetch(FetchMode.JOIN)
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "category_id", nullable = false)
     Category category;
+
     @Column(name = "created_on")
     LocalDateTime createdOn = LocalDateTime.now();
+
     @Column(name = "description", length = 7000)
     String description;
+
     @Column(name = "event_date", nullable = false)
     LocalDateTime eventDate;
+
     @Column(name = "initiator_id", nullable = false)
     Long initiatorId;
+
     @Embedded
     Location location;
+
     @Column(name = "paid", nullable = false)
     boolean paid;
+
     @Column(name = "participant_limit")
     int participantLimit;
+
     @Column(name = "published_on")
     LocalDateTime publishedOn;
+
     @Column(name = "request_moderation")
     boolean requestModeration;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "state", length = 50)
     EventState state = EventState.PENDING;
+
     @Column(name = "title", length = 120, nullable = false)
     String title;
 }
