@@ -2,8 +2,6 @@ package ewm.eventservice.event.service.impl;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import ewm.client.StatRestClientImpl;
-import ewm.dto.ViewStatsDto;
 import ewm.eventservice.category.mapper.CategoryMapper;
 import ewm.eventservice.category.mapper.User;
 import ewm.eventservice.category.mapper.UserMapper;
@@ -46,7 +44,6 @@ public class EventServicePrivateImpl implements EventServicePrivate {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final JPAQueryFactory jpaQueryFactory;
-    private final StatRestClientImpl statRestClient;
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
     private final RequestFeignClient requestFeignClient;
@@ -88,7 +85,7 @@ public class EventServicePrivateImpl implements EventServicePrivate {
         BooleanExpression booleanExpression = QEvent.event.initiatorId.eq(userId);
         List<EventShortDto> events = getEvents(pageRequest, booleanExpression);
         List<Long> eventIds = events.stream().map(EventShortDto::getId).toList();
-        Map<Long, Long> confirmedRequestsMap = getConfirmedRequests(eventIds);
+        Map<Long, Long> confirmedRequests = getConfirmedRequests(eventIds);
 
         Set<String> uris = events.stream()
                 .map(event -> "/events/" + event.getId()).collect(Collectors.toSet());
@@ -99,13 +96,8 @@ public class EventServicePrivateImpl implements EventServicePrivate {
                 .orElseThrow(() -> new NotFoundException("Не заданы даты"))
                 .getEventDate();
 
-        Map<String, Long> viewMap = statRestClient
-                .stats(start, LocalDateTime.now(), uris.stream().toList(), false).stream()
-                .collect(Collectors.groupingBy(ViewStatsDto::getUri, Collectors.summingLong(ViewStatsDto::getHits)));
-
         List<EventShortDto> eventShortDto = events.stream().peek(shortDto -> {
-            shortDto.setViews(viewMap.getOrDefault("/events/" + shortDto.getId(), 0L));
-            shortDto.setConfirmedRequests(confirmedRequestsMap.getOrDefault(shortDto.getId(), 0L));
+            shortDto.setConfirmedRequests(confirmedRequests.getOrDefault(shortDto.getId(), 0L));
         }).toList();
 
         log.info("Получили список событий по заданным параметрам");

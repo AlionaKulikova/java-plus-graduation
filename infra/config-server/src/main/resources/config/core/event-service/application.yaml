@@ -15,3 +15,21 @@ spring:
       mode: always
 stat-server:
   uri: http://stats-server:9090
+grpc:
+  client:
+    collector:
+      discovery:
+        enabled: true
+      serviceId: collector
+      address: discovery:///collector
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+    analyzer:
+      discovery:
+        enabled: true
+      serviceId: analyzer
+      address: discovery:///analyzer
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext

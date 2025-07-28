@@ -2,7 +2,6 @@ package ewm.eventservice.event.service.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import ewm.client.StatRestClient;
 import ewm.dto.ViewStatsDto;
 import ewm.eventservice.category.model.Category;
 import ewm.eventservice.category.model.QCategory;
@@ -41,7 +40,6 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final JPAQueryFactory jpaQueryFactory;
-    private final StatRestClient statRestClient;
     private final RequestFeignClient requestFeignClient;
     private final UserFeignClient userFeignClient;
 
@@ -51,7 +49,7 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
 
         List<EventFullDto> events = getEvents(pageRequest, eventQueryExpression);
         List<Long> eventIds = events.stream().map(EventFullDto::getId).toList();
-        Map<Long, Long> confirmedRequestsMap = getConfirmedRequests(eventIds);
+        Map<Long, Long> confirmedRequests = getConfirmedRequests(eventIds);
 
         Set<String> uris = events.stream()
                 .map(event -> "/events/" + event.getId()).collect(Collectors.toSet());
@@ -62,13 +60,9 @@ public class EventServiceAdminImpl implements EventServiceAdmin {
                 .orElseThrow(() -> new NotFoundException("Не заданы даты"))
                 .getEventDate();
 
-        Map<String, Long> viewMap = statRestClient
-                .stats(start, LocalDateTime.now(), uris.stream().toList(), false).stream()
-                .collect(Collectors.groupingBy(ViewStatsDto::getUri, Collectors.summingLong(ViewStatsDto::getHits)));
-
-        List<EventFullDto> eventFullDto = events.stream().peek(shortDto -> {
-            shortDto.setViews(viewMap.getOrDefault("/events/" + shortDto.getId(), 0L));
-            shortDto.setConfirmedRequests(confirmedRequestsMap.getOrDefault(shortDto.getId(), 0L));
+        List<EventFullDto> eventFullDto =   events.stream().peek(shortDto -> {
+            //shortDto.setViews(viewMap.getOrDefault("/events/" + shortDto.getId(), 0L));
+            shortDto.setConfirmedRequests(confirmedRequests.getOrDefault(shortDto.getId(), 0L));
         }).toList();
 
         log.info("Получены события по параметрам для админа");
