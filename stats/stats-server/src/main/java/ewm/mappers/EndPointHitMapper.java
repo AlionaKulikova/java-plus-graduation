@@ -21,7 +21,6 @@ public class EndPointHitMapper {
         endpointHit.setUri(dto.getUri());
         LocalDateTime timestamp = LocalDateTime.parse(dto.getTimestamp(), dateTimeFormatter);
         endpointHit.setTimestamp(timestamp);
-
         return endpointHit;
     }
 }

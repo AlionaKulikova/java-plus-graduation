@@ -1,6 +1,5 @@
-package ewm.controller;
+package ewm;
 
-import ewm.client.StatsFeignClient;
 import ewm.dto.EndpointHitDto;
 import ewm.dto.RequestParamDto;
 import ewm.dto.ViewStatsDto;
@@ -24,7 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StatController implements StatsFeignClient {
+public class StatController {
     final StatService statService;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -42,7 +41,6 @@ public class StatController implements StatsFeignClient {
                                     @RequestParam(value = "unique", required = false) boolean unique) {
         RequestParamDto requestParamDto = new RequestParamDto(LocalDateTime.parse(start, formatter),
                 LocalDateTime.parse(end, formatter), uris, unique);
-
         return statService.stats(requestParamDto);
     }
 }

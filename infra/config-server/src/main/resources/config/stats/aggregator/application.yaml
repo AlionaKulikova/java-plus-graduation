@@ -1,0 +1,11 @@
+kafka:
+  topics:
+    actions: "stats.user-actions.v1"
+    similarity: "stats.events-similarity.v1"
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+  key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+  value-deserializer: "ru.practicum.stats.aggregator.UserActionAvroDeserializer"
+  key-serializer: "org.apache.kafka.common.serialization.StringSerializer"
+  value-serializer: "ru.practicum.stats.aggregator.EventSimilarityAvroSerializer"
+  consumer-group-id: "groupAggregatorConsumer"
+  auto-offset-reset: "earliest"

@@ -28,4 +28,11 @@ public class RequestController implements RequestFeignClient {
                                            @PathVariable String requestStatus) {
         return requestService.countAllByEventIdAndStatus(eventId, requestStatus);
     }
+
+    @GetMapping("/exist/{eventId}/{userId}")
+    public boolean isRequestExist(@PathVariable Long eventId,
+                                  @PathVariable Long userId) {
+        return requestService.isRequestExist(userId, eventId);
+    }
+
 }
