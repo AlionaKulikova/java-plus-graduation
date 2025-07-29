@@ -1,17 +1,17 @@
 package ewm.interaction.dto.subscription;
 
 import ewm.interaction.dto.user.UserShortDto;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
-@Getter
-@Setter
+import java.time.LocalDateTime;
+
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SubscriptionDto {
-    private Long id;
-
-    private UserShortDto subscriber;
-
-    private UserShortDto subscribed;
-
-    private String created;
+    Long id;
+    UserShortDto follower;
+    UserShortDto following;
+    LocalDateTime created;
 }

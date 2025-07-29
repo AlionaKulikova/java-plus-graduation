@@ -1,7 +1,7 @@
 package ewm.request.mapper;
 
 
-import ewm.interaction.dto.event.event.EventFullDto;
+import ewm.interaction.dto.eventandadditional.event.EventFullDto;
 import ewm.interaction.dto.request.ParticipationRequestDto;
 import ewm.request.model.ParticipationRequest;
 import org.mapstruct.Mapper;

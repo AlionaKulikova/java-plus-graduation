@@ -1,5 +1,6 @@
 package ewm.subscription.service;
 
+
 import ewm.interaction.dto.subscription.SubscriptionDto;
 import ewm.interaction.dto.user.UserShortDto;
 import org.springframework.data.domain.Pageable;
@@ -7,12 +8,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.Set;
 
 public interface SubscriptionService {
+    Set<UserShortDto> findFollowing(long userId, Pageable page);
 
-    SubscriptionDto subscribe(Long subscriberId, Long subscribedToId);
+    Set<UserShortDto> findFollowers(long userId, Pageable page);
 
-    void unsubscribe(Long subscriberId, Long subscribedToId);
+    SubscriptionDto follow(long userId, long followingId);
 
-    Set<UserShortDto> getSubscriptions(Long userId, Pageable page);
-
-    Set<UserShortDto> getSubscribers(Long userId, Pageable page);
+    void unfollow(long userId, long followingId);
 }

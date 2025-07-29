@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import ewm.interaction.dto.request.RequestStatus;
 import ewm.request.model.QParticipationRequest;
 import ewm.request.repository.RequestRepository;
-import ewm.request.service.interfaces.RequestService;
+import ewm.request.service.RequestService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,7 +26,7 @@ public class RequestServiceImpl implements RequestService {
     final RequestRepository requestRepository;
 
     @Override
-    public Map<Long, Long> getConfirmedRequests(List<Long> eventIds) {
+    public Map<Long, Long> getConfirmedRequestMap(List<Long> eventIds) {
         QParticipationRequest qRequest = QParticipationRequest.participationRequest;
         return jpaQueryFactory
                 .select(qRequest.eventId.as("eventId"), qRequest.count().as("confirmedRequests"))
@@ -42,7 +42,14 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Long countAllByEventIdAndStatus(Long eventId, String requestStatus) {
+    public Long countAllByEventIdAndStatusIs(Long eventId, String requestStatus) {
         return requestRepository.countAllByEventIdAndStatusIs(eventId, RequestStatus.valueOf(requestStatus));
     }
+
+    @Override
+    public boolean isRequestExist(long userId, long eventId) {
+        return requestRepository.existsByEventIdAndRequesterId(eventId, userId);
+    }
+
+
 }

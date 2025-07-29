@@ -1,0 +1,26 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://recommendation-db:5432/ewm-recommendation
+    username: root
+    password: root
+  sql:
+    init:
+      mode: always
+kafka:
+  topics:
+    similarity: "stats.events-similarity.v1"
+    actions: "stats.user-actions.v1"
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+  key-deserializer: "org.apache.kafka.common.serialization.StringDeserializer"
+  value-deserializer-similarity: "ru.practicum.ewm.stats.analyzer.EventSimilarityAvroDeserializer"
+  value-deserializer-actions: "ru.practicum.ewm.stats.analyzer.UserActionAvroDeserializer"
+  consumer-analyzer-actions-group-id: "groupAnalyzerActionsConsumer"
+  consumer-analyzer-similarity-group-id: "groupAnalyzerSimilarityConsumer"
+  auto-offset-reset: "earliest"

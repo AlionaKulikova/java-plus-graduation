@@ -9,22 +9,21 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-
 @Entity
+@Table(name = "users")
 @Getter
 @Setter
-@Table(name = "users")
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", length = 250, nullable = false)
     String name;
-
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", length = 254, nullable = false)
     String email;
 }

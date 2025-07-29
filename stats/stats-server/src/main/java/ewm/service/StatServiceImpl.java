@@ -28,15 +28,17 @@ public class StatServiceImpl implements StatService {
     @Override
     @Transactional
     public void hit(EndpointHitDto endpointHitDto) {
+        log.info("Запись {} в БД", endpointHitDto);
         EndpointHit endpointHit = hitMapper.mapToEndpointHit(endpointHitDto);
         hitRepository.save(endpointHit);
-        log.info("Статистика {} сохранена в базу данных", endpointHit);
+        log.info("Объект {} успешно сохранен в БД", endpointHit);
     }
-
 
     @Override
     @Transactional(readOnly = true)
     public List<ViewStatsDto> stats(RequestParamDto params) {
+        log.info("Запрос статистики {}", params);
+
         if (params.getUnique() == null) {
             params.setUnique(false);
         }
@@ -62,7 +64,7 @@ public class StatServiceImpl implements StatService {
             }
         }
 
-        log.info("Статистика получена из базы данных", statsToReturn);
+        log.info("Данные статистики {} успешно считаны из БД", statsToReturn);
         return statsToReturn;
 
     }

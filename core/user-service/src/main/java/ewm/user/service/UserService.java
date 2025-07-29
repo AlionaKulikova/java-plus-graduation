@@ -3,15 +3,19 @@ package ewm.user.service;
 import ewm.interaction.dto.user.NewUserRequest;
 import ewm.interaction.dto.user.UserDto;
 import ewm.interaction.dto.user.UserShortDto;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    List<UserDto> getUsers(List<Long> ids, Integer from, Integer size);
+    UserDto create(NewUserRequest newUserRequest);
 
-    UserDto create(NewUserRequest newUser);
+    List<UserDto> findAllBy(List<Long> ids, Pageable pageRequest);
 
-    void delete(Long id);
-    Map<Long, UserShortDto> getMapUsers(List<Long> ids);
+    void deleteBy(long userId);
+
+    UserDto findBy(long userId);
+
+    Map<Long, UserShortDto> findAllBy(List<Long> ids);
 }

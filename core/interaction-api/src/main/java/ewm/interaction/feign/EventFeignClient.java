@@ -1,16 +1,22 @@
 package ewm.interaction.feign;
 
-import ewm.interaction.dto.event.event.EventFullDto;
-import ewm.interaction.util.PathConstants;
+import ewm.interaction.dto.eventandadditional.event.EventFullDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "event-service", path = PathConstants.EVENTS_FEIGN)
+import java.util.List;
+import java.util.Set;
+
+@FeignClient(name = "event-and-additional-service", path = "/events/feign")
 public interface EventFeignClient {
-    @GetMapping(PathConstants.USER_ID_EVENT_ID)
-    EventFullDto getEventOfUser(@PathVariable Long userId, @PathVariable Long eventId);
+    @GetMapping("/{eventId}/{userId}")
+    EventFullDto getBy(@PathVariable long userId, @PathVariable long eventId);
 
-    @GetMapping(PathConstants.EVENT_ID)
-    EventFullDto getEventByID(@PathVariable Long eventId);
+    @GetMapping("/{eventId}")
+    EventFullDto getBy(@PathVariable long eventId);
+
+    @GetMapping
+    List<EventFullDto> getBy(@RequestParam Set<Long> eventIds);
 }

@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>ru.practicum</groupId>
         <artifactId>explore-with-me</artifactId>
@@ -11,13 +10,14 @@
     </parent>
 
     <artifactId>core</artifactId>
-    <packaging>pom</packaging>
 
+    <packaging>pom</packaging>
     <modules>
-        <module>interaction-api</module>
-        <module>request-service</module>
-        <module>event-service</module>
-        <module>subscription-service</module>
         <module>user-service</module>
+        <module>interaction-api</module>
+        <module>subscription-service</module>
+        <module>request-service</module>
+        <module>event-and-additional-service</module>
     </modules>
+
 </project>

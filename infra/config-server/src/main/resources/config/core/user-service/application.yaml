@@ -7,7 +7,7 @@ spring:
           time_zone: UTC
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://user-service-db:5432/ewm-user-service
+    url: jdbc:postgresql://user-db:5432/ewm-user
     username: root
     password: root
   sql:

@@ -6,10 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
-    int deleteBySubscribedId(Long subscribedId);
+    int deleteByFollowingId(long followingId);
 
-    Page<Subscription> findBySubscribedId(Long subscribedId, Pageable pageable);
+    Page<Subscription> findByFollowingId(long followingId, Pageable pageable);
 
-    Page<Subscription> findBySubscriberId(Long subscriberId, Pageable pageable);
+    Page<Subscription> findByFollowerId(long followerId, Pageable pageable);
 
 }

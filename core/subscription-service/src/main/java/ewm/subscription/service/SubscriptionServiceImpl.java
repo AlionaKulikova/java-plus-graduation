@@ -7,8 +7,8 @@ import ewm.interaction.exception.ConflictException;
 import ewm.interaction.exception.NotFoundException;
 import ewm.interaction.exception.ValidationException;
 import ewm.interaction.feign.UserFeignClient;
-import ewm.subscription.mapper.SubscriptionMapper;
-import ewm.subscription.mapper.UserMapper;
+import ewm.subscription.mappers.SubscriptionMapper;
+import ewm.subscription.mappers.UserMapper;
 import ewm.subscription.model.Subscription;
 import ewm.subscription.repository.SubscriptionRepository;
 import lombok.AccessLevel;
@@ -31,81 +31,93 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SubscriptionServiceImpl implements SubscriptionService {
-    private final SubscriptionRepository subscriptionRepository;
-    private final UserFeignClient userFeignClient;
-    private final SubscriptionMapper subscriptionMapper;
-    private final UserMapper userMapper;
+    final SubscriptionRepository subscriptionRepository;
+    final UserFeignClient userFeignClient;
+    final SubscriptionMapper subscriptionMapper;
+    final UserMapper userMapper;
+
+    @Override
+    public Set<UserShortDto> findFollowing(long userId, Pageable page) {
+        log.info("Получение подписок текущего пользователя с id = {}", userId);
+
+        Page<Subscription> following = subscriptionRepository.findByFollowerId(userId, page);
+
+        List<Long> followingIds = following.get()
+                .map(Subscription::getFollowingId)
+                .toList();
+
+        log.info("Получено {} подписок для пользователя с id = {}", followingIds.size(), userId);
+
+        return userFeignClient
+                .findAllBy(followingIds, 0, page.getPageSize())
+                .stream()
+                .map(userMapper::toUserShortDto)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<UserShortDto> findFollowers(long userId, Pageable page) {
+        log.info("Получение подписчиков текущего пользователя с id = {}", userId);
+
+        Page<Subscription> followers = subscriptionRepository.findByFollowingId(userId, page);
+
+        List<Long> followersIds = followers.get()
+                .map(Subscription::getFollowerId)
+                .toList();
+
+        log.info("Получено {} подписчиков для пользователя с id = {}", followersIds.size(), userId);
+
+        return userFeignClient
+                .findAllBy(followersIds, 0, page.getPageSize())
+                .stream()
+                .map(userMapper::toUserShortDto)
+                .collect(Collectors.toSet());
+    }
 
     @Override
     @Transactional
-    public SubscriptionDto subscribe(Long subscriberId, Long subscribedToId) {
-        if (subscriberId.equals(subscribedToId)) {
-            throw new ConflictException("Пользователь не может подписаться сам на себя");
+    public SubscriptionDto follow(long userId, long followingId) {
+        log.info("Попытка пользователя с id = {} подписаться на пользователя с id = {}", userId, followingId);
+
+        if (userId == followingId) {
+            throw new ConflictException("Пользователь с id = " + " не может подписаться сам на себя");
         }
 
         Subscription subscription = subscriptionRepository.save(
-                subscriptionMapper.toSubscription(new Subscription(), subscriberId, subscribedToId)
+                subscriptionMapper.toSubscription(new Subscription(), userId, followingId)
         );
-        log.info("Подписка уже оформлена");
+        log.info("Пользователь с id = {} успешно подписался на пользователя с id = {}", userId, followingId);
         SubscriptionDto subscriptionDto = subscriptionMapper.toSubscriptionShortDto(subscription);
 
-        UserDto subscriber;
-
+        UserDto follower;
         try {
-            subscriber = userFeignClient.getUsers(List.of(subscriberId), 0, 10).getFirst();
+            follower = userFeignClient.findAllBy(List.of(userId), 0, 10).getFirst();
         } catch (NoSuchElementException e) {
-            throw new NotFoundException("Не найден пользователь с id " + subscriberId);
+            throw new NotFoundException("Пользователь с id = " + userId + " не найден");
         }
 
-        UserDto subscribed;
-
+        UserDto following;
         try {
-            subscribed = userFeignClient.getUsers(List.of(subscribedToId), 0, 10).getFirst();
+            following = userFeignClient.findAllBy(List.of(followingId), 0, 10).getFirst();
         } catch (NoSuchElementException e) {
-            throw new NotFoundException("Не найден пользователь с id " + subscribedToId);
+            throw new NotFoundException("Пользователь с id = " + followingId + " не найден");
         }
-        subscriptionDto.setSubscriber(
-                userMapper.toUserShortDto(subscriber));
-        subscriptionDto.setSubscribed(
-                userMapper.toUserShortDto(subscribed));
 
+        subscriptionDto.setFollower(
+                userMapper.toUserShortDto(follower));
+        subscriptionDto.setFollowing(
+                userMapper.toUserShortDto(following));
         return subscriptionDto;
     }
 
     @Override
     @Transactional
-    public void unsubscribe(Long subscriberId, Long subscribedToId) {
-        int deleteCount = subscriptionRepository.deleteBySubscribedId(subscribedToId);
+    public void unfollow(long userId, long followingId) {
+        log.info("Попытка пользователя с id = {} отписаться от пользователя с id = {}", userId, followingId);
+        int deleteCount = subscriptionRepository.deleteByFollowingId(followingId);
         if (deleteCount == 0) {
-            throw new ValidationException("Подписка не найдена");
+            throw new ValidationException("Некорректно заданные параметры");
         }
-    }
-
-    @Override
-    public Set<UserShortDto> getSubscriptions(Long userId, Pageable page) {
-        Page<Subscription> subscribed = subscriptionRepository.findBySubscriberId(userId, page);
-        List<Long> subscribedIds = subscribed.get()
-                .map(Subscription::getSubscribedId)
-                .toList();
-
-        return userFeignClient
-                .getUsers(subscribedIds, 0, page.getPageSize())
-                .stream()
-                .map(userMapper::toUserShortDto)
-                .collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<UserShortDto> getSubscribers(Long userId, Pageable page) {
-        Page<Subscription> subscriber = subscriptionRepository.findBySubscriberId(userId, page);
-        List<Long> subscribersIds = subscriber.get()
-                .map(Subscription::getSubscriberId)
-                .toList();
-
-        return userFeignClient
-                .getUsers(subscribersIds, 0, page.getPageSize())
-                .stream()
-                .map(userMapper::toUserShortDto)
-                .collect(Collectors.toSet());
+        log.info("Пользователь с id = {} успешно отписался от пользователя с id = {}", userId, followingId);
     }
 }

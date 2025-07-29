@@ -1,79 +1,78 @@
 package ewm.user.service;
 
+import com.querydsl.core.BooleanBuilder;
 import ewm.interaction.dto.user.NewUserRequest;
 import ewm.interaction.dto.user.UserDto;
 import ewm.interaction.dto.user.UserShortDto;
-import ewm.interaction.exception.ConflictException;
 import ewm.interaction.exception.NotFoundException;
-import ewm.interaction.exception.ValidationException;
-import ewm.user.mapper.UserMapper;
+import ewm.user.mappers.UserMapper;
+import ewm.user.model.QUser;
 import ewm.user.model.User;
 import ewm.user.repository.UserRepository;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
+import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    final UserRepository userRepository;
+    final UserMapper userMapper;
 
     @Override
-    public List<UserDto> getUsers(List<Long> ids, Integer from, Integer size) {
-        if (from < 0 || size <= 0) {
-            throw new ValidationException("Параметры пагинации должны быть неотрицательными и size > 0");
-        }
-        Pageable pageable = PageRequest.of(from / size, size);
-        List<User> users = (ids == null || ids.isEmpty()) ?
-                userRepository.findAll(pageable).getContent() :
-                userRepository.findByIdIn(ids, pageable).getContent();
-        return users.stream()
-                .map(userMapper::toUserDto)
-                .toList();
-    }
-
-    @Override
-    public UserDto create(NewUserRequest newUser) {
-        if (userRepository.existsByEmail(newUser.getEmail())) {
-            throw new ConflictException("Пользователь с email=" + newUser.getEmail() + " уже существует");
-        }
-        User user = userMapper.toUser(newUser);
+    @Transactional
+    public UserDto create(NewUserRequest newUserRequest) {
+        User user = userMapper.toUser(newUserRequest);
         return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
-    public void delete(Long id) {
-        User user = checkUserExists(id);
-        userRepository.deleteById(id);
-        log.info("Пользователь {} удалён", user);
+    public List<UserDto> findAllBy(List<Long> ids, Pageable pageRequest) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (ids != null && !ids.isEmpty()) {
+            booleanBuilder.and(QUser.user.id.in(ids));
+        }
+
+        Page<User> usersPage = userRepository.findAll(booleanBuilder, pageRequest);
+        return usersPage.map(userMapper::toUserDto).toList();
     }
 
     @Override
-    public Map<Long, UserShortDto> getMapUsers(List<Long> ids) {
-        if (ids == null || ids.isEmpty()) {
-            log.info("Невозможно получить пользователей. Список ids пользвателей пуст");
-            return Collections.emptyMap();
-        }
+    public Map<Long, UserShortDto> findAllBy(List<Long> ids) {
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-        return userRepository.findAllById(ids)
-                .stream()
+        if (ids != null && !ids.isEmpty()) {
+            booleanBuilder.and(QUser.user.id.in(ids));
+        }
+        return StreamSupport
+                .stream(userRepository.findAll(booleanBuilder).spliterator(), false)
                 .collect(Collectors.toMap(
                         User::getId,
                         userMapper::toUserShortDto
                 ));
     }
 
-    private User checkUserExists(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден или недоступен"));
+    @Override
+    @Transactional
+    public void deleteBy(long userId) {
+        userRepository.deleteById(userId);
+    }
+
+    public UserDto findBy(long userId) {
+        return userRepository.findById(userId)
+                .map(userMapper::toUserDto)
+                .orElseThrow(() -> new NotFoundException("Пользователь с Id =" + userId + " не найден"));
     }
 }

@@ -10,7 +10,7 @@ spring:
         serviceId: config-server
       fail-fast: true
 server:
-  port: 8083
+  port: ${SERVER_PORT}
 eureka:
   client:
     serviceUrl:
