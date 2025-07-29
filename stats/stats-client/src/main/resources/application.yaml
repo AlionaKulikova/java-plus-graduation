@@ -1,3 +1,0 @@
-spring:
-  stat-server:
-    uri: http://localhost:9090

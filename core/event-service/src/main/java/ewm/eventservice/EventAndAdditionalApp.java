@@ -11,7 +11,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableDiscoveryClient
 @ConfigurationPropertiesScan
 @EnableFeignClients(basePackages = {"ewm.client", "ewm.interaction.feign"})
-@ComponentScan(basePackages = {"ewm.client", "ewm.eventservice"})
+@ComponentScan(basePackages = {"ewm.client", "ewm.eventservice", "ru.practicum.ewm.stats.client"})
 public class EventAndAdditionalApp {
     public static void main(String[] args) throws InterruptedException {
         SpringApplication.run(EventAndAdditionalApp.class, args);

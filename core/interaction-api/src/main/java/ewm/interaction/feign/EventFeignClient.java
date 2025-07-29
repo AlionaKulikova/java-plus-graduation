@@ -5,6 +5,10 @@ import ewm.interaction.util.PathConstants;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Set;
 
 @FeignClient(name = "event-service", path = PathConstants.EVENTS_FEIGN)
 public interface EventFeignClient {
@@ -13,4 +17,7 @@ public interface EventFeignClient {
 
     @GetMapping(PathConstants.EVENT_ID)
     EventFullDto getEventByID(@PathVariable Long eventId);
+
+    @GetMapping
+    List<EventFullDto> getEventsByIds(@RequestParam Set<Long> eventIds);
 }

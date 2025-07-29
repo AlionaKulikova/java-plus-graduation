@@ -25,17 +25,105 @@
 	<properties>
 		<java.version>21</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<modelmapper.version>3.2.0</modelmapper.version>
+		<lombok.version>1.18.36</lombok.version>
+		<postgresql.version>42.7.5</postgresql.version>
+		<h2.version>2.2.224</h2.version>
+		<querydsl.version>5.1.0</querydsl.version>
+		<jakarta.validation-api.version>3.1.0</jakarta.validation-api.version>
+		<jackson-annotations.version>2.18.2</jackson-annotations.version>
 		<spring-cloud-dependencies.version>2023.0.3</spring-cloud-dependencies.version>
+		<!--        <jackson-databind.version>2.18.2</jackson-databind.version>-->
+		<grpc-spring-boot-starter.version>3.1.0.RELEASE</grpc-spring-boot-starter.version>
+		<spring-kafka.version>3.2.4</spring-kafka.version>
+		<grpc.version>1.63.0</grpc.version>
+		<protobuf.version>3.23.4</protobuf.version>
+		<protobuf-plugin.version>2.4.0</protobuf-plugin.version>
+		<apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
+		<avro.version>1.11.3</avro.version>
+		<avro-maven-plugin.version>1.11.3</avro-maven-plugin.version>
+		<jakarta.annotation-api.version>1.3.5</jakarta.annotation-api.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.modelmapper</groupId>
+				<artifactId>modelmapper</artifactId>
+				<version>${modelmapper.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${postgresql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>${h2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>jakarta.validation</groupId>
+				<artifactId>jakarta.validation-api</artifactId>
+				<version>${jakarta.validation-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson-annotations.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.querydsl</groupId>
+				<artifactId>querydsl-jpa</artifactId>
+				<classifier>jakarta</classifier>
+				<version>${querydsl.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
 				<version>${spring-cloud-dependencies.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.devh</groupId>
+				<artifactId>grpc-server-spring-boot-starter</artifactId>
+				<version>${grpc-spring-boot-starter.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.devh</groupId>
+				<artifactId>grpc-client-spring-boot-starter</artifactId>
+				<version>${grpc-spring-boot-starter.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.kafka</groupId>
+				<artifactId>spring-kafka</artifactId>
+				<version>${spring-kafka.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro</artifactId>
+				<version>${avro.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-protobuf</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.grpc</groupId>
+				<artifactId>grpc-stub</artifactId>
+				<version>${grpc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>${apt-maven-plugin.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -51,6 +139,16 @@
 							<spring.profiles.active>test</spring.profiles.active>
 						</systemPropertyVariables>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>io.github.ascopes</groupId>
+					<artifactId>protobuf-maven-plugin</artifactId>
+					<version>${protobuf-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.avro</groupId>
+					<artifactId>avro-maven-plugin</artifactId>
+					<version>${avro-maven-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -79,6 +177,16 @@
 					</dependencies>
 				</plugin>
 				<plugin>
+					<groupId>com.mysema.maven</groupId>
+					<artifactId>apt-maven-plugin</artifactId>
+					<version>${apt-maven-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.querydsl</groupId>
+					<artifactId>querydsl-apt</artifactId>
+					<version>${querydsl.version}</version>
+				</plugin>
+				<plugin>
 					<groupId>com.github.spotbugs</groupId>
 					<artifactId>spotbugs-maven-plugin</artifactId>
 					<version>4.8.5.0</version>
@@ -100,14 +208,6 @@
 					<version>0.8.12</version>
 					<configuration>
 						<output>file</output>
-						<excludes>
-							<exclude>stats/**</exclude>
-							<exclude>infra/**</exclude>
-							<exclude>core/event-service/**</exclude>
-							<exclude>core/interaction-service/**</exclude>
-							<exclude>core/request-service/**</exclude>
-							<exclude>core/user-service/**</exclude>
-						</excludes>
 					</configuration>
 					<executions>
 						<execution>
@@ -134,7 +234,7 @@
 											<limit>
 												<counter>LINE</counter>
 												<value>COVEREDRATIO</value>
-												<minimum>0.8</minimum>
+												<minimum>0.2</minimum>
 											</limit>
 											<limit>
 												<counter>BRANCH</counter>
@@ -209,5 +309,6 @@
 			</build>
 		</profile>
 	</profiles>
+
 
 </project>

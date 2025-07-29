@@ -7,4 +7,6 @@ public interface RequestService {
     Map<Long, Long> getConfirmedRequests(List<Long> eventIds);
 
     Long countAllByEventIdAndStatus(Long eventId, String requestStatus);
+
+    boolean isRequestExist(Long userId, Long eventId);
 }

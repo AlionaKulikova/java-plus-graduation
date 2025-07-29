@@ -2,8 +2,6 @@ package ewm.eventservice.event.service.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import ewm.client.StatRestClientImpl;
-import ewm.dto.ViewStatsDto;
 import ewm.eventservice.category.model.QCategory;
 import ewm.eventservice.event.mappers.EventMapper;
 import ewm.eventservice.event.model.Event;
@@ -17,6 +15,7 @@ import ewm.interaction.dto.event.event.ParamsEventPublic;
 import ewm.interaction.dto.request.RequestStatus;
 import ewm.interaction.dto.user.UserShortDto;
 import ewm.interaction.exception.NotFoundException;
+import ewm.interaction.exception.ValidationException;
 import ewm.interaction.feign.RequestFeignClient;
 import ewm.interaction.feign.UserFeignClient;
 import lombok.AccessLevel;
@@ -26,10 +25,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.stats.client.AnalyzerClient;
+import ru.practicum.ewm.stats.client.CollectorClient;
+import ru.practicum.grpc.stats.recommendation.RecommendedEventProto;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -41,8 +45,9 @@ public class EventServicePublicImpl implements EventServicePublic {
     private final EventMapper eventMapper;
     private final RequestFeignClient requestFeignClient;
     private final UserFeignClient userFeignClient;
-    private final StatRestClientImpl statRestClient;
     private final JPAQueryFactory jpaQueryFactory;
+    final CollectorClient collectorClient;
+    private final AnalyzerClient analyzerClient;
 
     private static final int TIME_BEFORE = 10;
 
@@ -51,24 +56,9 @@ public class EventServicePublicImpl implements EventServicePublic {
         BooleanBuilder eventQueryExpression = buildExpression(params);
         List<EventShortDto> events = getEvents(pageRequest, eventQueryExpression);
         List<Long> eventIds = events.stream().map(EventShortDto::getId).toList();
-        Map<Long, Long> confirmedRequestsMap = getConfirmedRequests(eventIds);
-
-        Set<String> uris = events.stream()
-                .map(event -> "/events/" + event.getId()).collect(Collectors.toSet());
-
-        LocalDateTime start = events
-                .stream()
-                .min(Comparator.comparing(EventShortDto::getEventDate))
-                .orElseThrow(() -> new NotFoundException("Не заданы даты"))
-                .getEventDate();
-
-        Map<String, Long> viewMap = statRestClient
-                .stats(start, LocalDateTime.now(), uris.stream().toList(), false).stream()
-                .collect(Collectors.groupingBy(ViewStatsDto::getUri, Collectors.summingLong(ViewStatsDto::getHits)));
-
+        Map<Long, Long> confirmedRequests = getConfirmedRequests(eventIds);
         List<EventShortDto> eventsShortDto = events.stream().peek(shortDto -> {
-            shortDto.setViews(viewMap.getOrDefault("/events/" + shortDto.getId(), 0L));
-            shortDto.setConfirmedRequests(confirmedRequestsMap.getOrDefault(shortDto.getId(), 0L));
+            shortDto.setConfirmedRequests(confirmedRequests.getOrDefault(shortDto.getId(), 0L));
         }).toList();
 
         log.info("Получены события по заданным параметрам");
@@ -76,23 +66,45 @@ public class EventServicePublicImpl implements EventServicePublic {
     }
 
     @Override
-    public EventFullDto getEventByID(Long eventId) {
+    public EventFullDto getEventByID(Long eventId, Long userId) {
         EventFullDto event = eventRepository.findById(eventId).map(eventMapper::toEventFullDto)
-                .filter(e -> e.getState() == EventState.PUBLISHED)
-                .orElseThrow(() -> new NotFoundException("Событие с ID=" + eventId + " не найдено"));
+                .orElseThrow(() -> new NotFoundException("Мероприятие с Id =" + eventId + " не найдено"));
+
+        if (!event.getState().equals(EventState.PUBLISHED)) {
+            throw new NotFoundException("Событие id = " + eventId + " не опубликовано");
+        }
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = now.minusYears(TIME_BEFORE);
-
-        statRestClient.stats(start, now, List.of("/events/" + eventId), true)
-                .forEach(viewStatsDto -> event.setViews(viewStatsDto.getHits()));
-
+        collectorClient.sendPreviewEvent(userId, eventId);
         long confirmedRequests = requestFeignClient.countAllByEventIdAndStatus(eventId,
                 RequestStatus.CONFIRMED.toString());
         event.setConfirmedRequests(confirmedRequests);
-
-        log.info("Получено событие {} найденное по id события {}", event, eventId);
         return event;
+    }
+
+    @Override
+    public List<EventFullDto> getRecommendations(Long userId, int maxResults) {
+        log.info("Получаю рекомендации для пользователья с id = {}", userId);
+        List<Long> eventIds = analyzerClient.getRecommendationsForUser(userId, maxResults)
+                .map(RecommendedEventProto::getEventId).toList();
+
+        return eventRepository
+                .findAllByIdIn((Set<Long>) eventIds)
+                .stream()
+                .map(eventMapper::toEventFullDto)
+                .toList();
+    }
+
+    @Override
+    public void like(Long eventId, Long userId) {
+        if (requestFeignClient.isRequestExist(eventId, userId)) {
+            collectorClient.sendLikeEvent(
+                    userId,
+                    eventId);
+        } else {
+            throw new ValidationException("Невозможно поставить лайк без заявки на участие");
+        }
     }
 
     private Map<Long, Long> getConfirmedRequests(List<Long> eventIds) {
