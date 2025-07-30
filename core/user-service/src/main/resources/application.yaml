@@ -2,21 +2,21 @@ spring:
   application:
     name: user-service
   config:
-    import: "configserver:"
+    import: 'configserver:'
   cloud:
     config:
       discovery:
         enabled: true
-        serviceId: config-server
+        service-id: config-server
       fail-fast: true
-server:
-  port: 8083
+      retry:
+        use-random-policy: true
+        max-interval: 6000
+
 eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.value}
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    preferIpAddress: true
-    hostname: localhost
-    instanceId: "${spring.application.name}:${server.port}"
-    leaseRenewalIntervalInSeconds: 10
+      defaultZone: http://${eureka.instance.hostname:localhost}:${eureka.instance.port:8761}/eureka/

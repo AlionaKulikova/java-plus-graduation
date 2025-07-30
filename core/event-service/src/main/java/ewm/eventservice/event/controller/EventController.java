@@ -7,10 +7,10 @@ import ewm.interaction.util.PathConstants;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,5 +29,11 @@ public class EventController implements EventFeignClient {
     public EventFullDto getEventByID(Long eventId) {
 
         return eventService.getEventByID(eventId);
+    }
+
+    @GetMapping
+    @Override
+    public List<EventFullDto> getEventsByIds(@RequestParam Set<Long> eventIds) {
+        return eventService.getEventsByIds(eventIds);
     }
 }

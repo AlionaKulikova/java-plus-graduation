@@ -21,7 +21,7 @@ public class Subscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = " subscriber_id")
+    @Column(name = "subscriber_id")
     Long subscriberId;
 
     @Column(name = "subscribed_id")

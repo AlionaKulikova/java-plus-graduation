@@ -1,0 +1,19 @@
+aggregator:
+  kafka:
+    producer-props:
+      bootstrap.servers: localhost:9092
+      client.id: "aggregator-client"
+      key.serializer: org.apache.kafka.common.serialization.LongSerializer
+      value.serializer: serializer.AvroSpecificSerializer
+    consumer-props:
+      bootstrap.servers: localhost:9092
+      group.id: "aggregator-group"
+      key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value.deserializer: serializer.UserAvroSpecificDeserializer
+    topics:
+      user-actions: stats.user-actions.v1
+      events-similarity: stats.events-similarity.v1
+  user-action-weight:
+    view: 0.4
+    register: 0.8
+    like: 1.0
