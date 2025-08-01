@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewm.stats.client.CollectorClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +39,7 @@ public class RequestServicePrivateImpl implements RequestServicePrivate {
     private final EventFeignClient eventFeignClient;
     private final RequestMapper requestMapper;
     private final UserMapper userMapper;
+    private final CollectorClient collectorClient;
 
     @Override
     public List<ParticipationRequestDto> getUserRequests(Long userId) {
@@ -87,6 +89,7 @@ public class RequestServicePrivateImpl implements RequestServicePrivate {
         if (!event.isRequestModeration() || event.getParticipantLimit() == 0) {
             request.setStatus(RequestStatus.CONFIRMED);
         }
+        collectorClient.registrationInEvent(userId, eventId);
 
         return requestMapper.toParticipantRequestDto(requestRepository.save(request));
     }

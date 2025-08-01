@@ -89,5 +89,14 @@ spring:
           uri: lb://event-service
           predicates:
             - Path=/admin/compilations/{compId}
+        - id: like_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/events/{eventId}/like
+        - id: recommendations_event_service_route
+          uri: lb://event-service
+          predicates:
+            - Path=/events/recommendations
+            - Query=maxResults
 server:
   port: 8080

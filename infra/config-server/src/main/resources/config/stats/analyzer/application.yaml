@@ -1,0 +1,36 @@
+spring:
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:6542/recommendation_db
+    username: main
+    password: main
+
+analyzer:
+  kafka:
+    action-consumer-props:
+      bootstrap.servers: localhost:9092
+      group.id: "analyzer-group"
+      key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value.deserializer: serializer.UserAvroSpecificDeserializer
+    similarity-consumer-props:
+      bootstrap.servers: localhost:9092
+      group.id: "analyzer-group"
+      key.deserializer: org.apache.kafka.common.serialization.LongDeserializer
+      value.deserializer: serializer.EventSimilarityDeserializer
+    topics:
+      user-actions: stats.user-actions.v1
+      events-similarity: stats.events-similarity.v1
+  user-action-weight:
+    view: 0.4
+    register: 0.8
+    like: 1.0
+
+grpc:
+  server:
+    port: 0
