@@ -25,16 +25,22 @@
 В данном блоке реализована работа со статистикой и рекомендациями. Статистика строится исходя из действий пользователя, а именно: просмотров, лайков и запросов на участие. Действия попадают в сервис collector через gRPC, а дальше через Kafka передаются в aggregator, который собирает данные и передаёт их в analyzer. Тот, в свою очередь, возвращает рекомендации в core через gRPC.
 
 ## Взаимодействие между сервисами
-user-service: ни от кого не зависит
-event-service: user-service, request-service, category-service, stats-server
-request-service: user-service, event-service, category-service
-category-service: event-service, stats-server
-stats-server: ни от кого не зависит
+- user-service: ни от кого не зависит
+- event-service: user-service, request-service, category-service, stats-server
+- request-service: user-service, event-service, category-service
+- category-service: event-service, stats-server
+- stats-server: ни от кого не зависит
 
 ## Клонирование и запуск проекта
 ```bash
-git clone [https://github.com/username/java-plus-graduation.git](https://github.com/AlionaKulikova/java-plus-graduation.git)
+git clone (https://github.com/AlionaKulikova/java-plus-graduation.git
 ```
-cd java-plus-graduation
-mvn clean install
-docker-compose up
+```bash
+ cd java-plus-graduation
+```
+```bash
+- mvn clean install
+```
+```bash
+- docker-compose up
+```
