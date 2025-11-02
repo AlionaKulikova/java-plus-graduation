@@ -33,7 +33,7 @@
 
 ## Клонирование и запуск проекта
 ```bash
-git clone (https://github.com/AlionaKulikova/java-plus-graduation.git
+git clone https://github.com/AlionaKulikova/java-plus-graduation.git
 ```
 ```bash
  cd java-plus-graduation
