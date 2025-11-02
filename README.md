@@ -39,8 +39,8 @@ git clone (https://github.com/AlionaKulikova/java-plus-graduation.git
  cd java-plus-graduation
 ```
 ```bash
-- mvn clean install
+mvn clean install
 ```
 ```bash
-- docker-compose up
+docker-compose up
 ```
